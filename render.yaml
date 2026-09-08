@@ -1,0 +1,9 @@
+services:
+  - type: static
+    name: portfolio
+    repo: https://github.com/goat82447-ops/Portfolio
+    branch: main
+    root: portfolio
+    buildCommand: ""     # empty: no build step
+    publishPath: portfolio
+    env: production
