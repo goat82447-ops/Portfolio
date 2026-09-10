@@ -1134,6 +1134,49 @@ section { position: relative; padding: 120px 0; }
   section { padding: 70px 0; }
 }
 
+.job-search { color: var(--teal); font-size: 15px; margin: 12px 0; max-width: 560px; }
+.assistant-launcher { position: fixed; bottom: 24px; right: 24px; z-index: 250; display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 1px solid var(--teal); border-radius: 8px; background: var(--surface); color: var(--text); box-shadow: 0 8px 32px #0006; font-size: 14px; }
+.assistant-launcher i { color: var(--teal); font-size: 20px; }
+.assistant-panel { position: fixed; right: 24px; bottom: 88px; z-index: 251; width: min(400px, calc(100vw - 32px)); max-height: calc(100dvh - 112px); padding: 0; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--bg-alt); box-shadow: 0 16px 64px #0008; overflow-y: auto; overscroll-behavior: contain; }
+.assistant-panel[hidden] { display: none; }
+.assistant-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.assistant-header h2 { font: 600 18px var(--font-display); }
+.assistant-label { color: var(--text-dim); font-size: 12px; margin-top: 4px; }
+.assistant-close { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; }
+.assistant-body { padding: 18px; }
+.assistant-status { color: var(--teal); font-size: 13px; margin-bottom: 16px; }
+.assistant-answer { height: 230px; overflow-y: auto; overscroll-behavior: contain; font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; padding-right: 8px; }
+.assistant-message { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.assistant-message:first-child { padding-top: 0; }
+.assistant-message strong { display: block; color: var(--teal); font-size: 12px; margin-bottom: 5px; }
+.assistant-message[data-speaker="You"] strong { color: var(--amber); }
+.assistant-message p { color: var(--text-dim); white-space: pre-line; }
+.assistant-form { margin-top: 16px; }
+.assistant-form label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+.assistant-composer { display: flex; gap: 8px; }
+.assistant-composer input { min-width: 0; flex: 1; padding: 11px; font: inherit; font-size: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: 6px; }
+.assistant-composer input::placeholder { color: var(--text-dim); }
+.assistant-send { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 6px; color: var(--bg); background: var(--teal); }
+.assistant-panel button:disabled, .assistant-composer input:disabled { opacity: 0.55; cursor: wait; }
+.assistant-privacy { color: var(--text-dim); font-size: 11px; line-height: 1.5; margin-top: 10px; }
+.assistant-clear { margin-top: 10px; color: var(--text-dim); font-size: 12px; text-decoration: underline; }
+.assistant-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.assistant-questions button { border: 1px solid var(--border-strong); padding: 8px 10px; border-radius: 6px; font-size: 12px; }
+.assistant-questions button:hover, .assistant-questions button[aria-pressed="true"] { border-color: var(--teal); color: var(--teal); }
+.assistant-agents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.assistant-agents button { display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 72px; padding: 8px 2px; font-size: 12px; border-radius: 6px; }
+.assistant-agents button:hover, .assistant-agents button[aria-pressed="true"] { background: var(--surface-2); }
+.assistant-agents i { font-size: 24px; color: var(--azure); }
+.assistant-agents button:nth-child(2) i { color: var(--teal); }
+.assistant-agents button:nth-child(3) i { color: var(--amber); }
+.assistant-contact { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; color: var(--teal); font-size: 14px; }
+.back-to-top { right: auto; left: 24px; }
+@media (max-width: 600px) {
+  .assistant-launcher { right: 16px; bottom: 16px; }
+  .assistant-panel { right: 16px; bottom: 80px; max-height: calc(100dvh - 96px); }
+  .assistant-answer { min-height: 0; }
+  .back-to-top { left: 16px; bottom: 18px; }
+}
 </style>
 </head>
 <body>
@@ -1172,9 +1215,10 @@ section { position: relative; padding: 120px 0; }
 
   <div class="hero-inner">
     <div class="hero-copy reveal">
-      <p class="hero-eyebrow"><span class="pulse-dot"></span>Available &middot; Hyderabad, India</p>
+      <p class="hero-eyebrow"><span class="pulse-dot"></span>Actively looking &middot; Hyderabad, India</p>
       <h1 class="hero-name">Hi, I'm Krishna Kumar Bandoju</h1>
       <h2 class="hero-title">Senior Full Stack Developer</h2>
+      <p class="job-search">Open to Senior Full Stack, Senior Backend .NET, and Tech Lead roles.</p>
       <p class="hero-subtitle">.NET &nbsp;•&nbsp; Angular &nbsp;•&nbsp; Azure &nbsp;•&nbsp; Microservices &nbsp;•&nbsp; DevOps &nbsp;•&nbsp; GenAI</p>
       <p class="hero-summary">Full Stack .NET Developer with 7+ years across the complete web application lifecycle — UI development, REST API/microservices design, database integration, and CI/CD pipeline engineering for enterprise platforms, including Microsoft Dynamics 365. Backend depth in C#, .NET 8, ASP.NET Core and SQL Server, paired with Angular on the frontend and Azure across the delivery pipeline.</p>
 
@@ -1462,7 +1506,7 @@ section { position: relative; padding: 120px 0; }
 <section class="contact" id="contact">
   <div class="section-inner contact-inner reveal">
     <h2 class="contact-heading">Let's build something great together</h2>
-    <p class="contact-text">Open to conversations about enterprise .NET/Angular platforms, Azure delivery pipelines, and where agentic AI fits into real engineering workflows. Reach out any way that's convenient.</p>
+    <p class="contact-text">Actively looking for Senior Full Stack Developer, Senior Backend .NET Developer, and Tech Lead opportunities. Based in Hyderabad, India, with experience across enterprise .NET/Angular platforms, Azure delivery pipelines, and engineering automation.</p>
 
     <div class="contact-actions">
       <a href="https://www.linkedin.com/in/krishna-bandoju-693453152/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn <i class="icon" data-icon="arrow-up-right"></i></a>
@@ -1500,6 +1544,47 @@ section { position: relative; padding: 120px 0; }
     <span class="footer-copyright">&copy; 2026 Krishna Kumar Bandoju</span>
   </div>
 </footer>
+
+<aside class="assistant-panel" id="krishnaAssistant" role="dialog" aria-labelledby="assistantTitle" hidden>
+  <div class="assistant-header">
+    <div>
+      <h2 id="assistantTitle">Krishna Assistant</h2>
+      <p class="assistant-label">AI assistant</p>
+    </div>
+    <button class="assistant-close" id="assistantClose" aria-label="Close Krishna Assistant" title="Close Krishna Assistant"><i class="icon" data-icon="xmark"></i></button>
+  </div>
+  <div class="assistant-body">
+    <p class="assistant-status">Actively looking &middot; Hyderabad, India</p>
+    <div class="assistant-answer" id="assistantAnswer" role="log" aria-label="Conversation with Krishna Assistant" aria-live="polite" aria-relevant="additions text" tabindex="0">
+      <div class="assistant-message" data-speaker="Krishna Assistant">
+        <strong>Krishna Assistant</strong>
+        <p>Hello! Thank you for reaching out. I'm Krishna's  assistant. How can I help you learn more about his experience, skills, or projects?</p>
+      </div>
+    </div>
+    <form class="assistant-form" id="assistantForm">
+      <label for="assistantQuestion">Your question</label>
+      <div class="assistant-composer">
+        <input id="assistantQuestion" name="question" type="text" maxlength="1000" placeholder="Ask about Krishna..." autocomplete="off" required>
+        <button class="assistant-send" type="submit" aria-label="Send question" title="Send question"><i class="icon" data-icon="arrow-up"></i></button>
+      </div>
+    </form>
+    <p class="assistant-privacy">AI can make mistakes. Please verify important details.</p>
+    <button class="assistant-clear" id="assistantClear" type="button">Clear chat</button>
+    <div class="assistant-questions" aria-label="Portfolio questions">
+      <button data-assistant-topic="summary" aria-pressed="true">Profile summary</button>
+      <button data-assistant-topic="roles" aria-pressed="false">Roles I'm seeking</button>
+      <button data-assistant-topic="experience" aria-pressed="false">Experience</button>
+      <button data-assistant-topic="leadership" aria-pressed="false">Leadership</button>
+    </div>
+    <div class="assistant-agents" aria-label="Agent summaries">
+      <button data-assistant-topic="atlas" aria-pressed="false" title="Atlas Agent: root-cause tracing" aria-label="About Atlas Agent"><i class="icon" data-icon="map-location-dot"></i><span>Atlas</span></button>
+      <button data-assistant-topic="selfheal" aria-pressed="false" title="Self-Heal Agent: candidate fixes" aria-label="About Self-Heal Agent"><i class="icon" data-icon="heart-pulse"></i><span>Self-Heal</span></button>
+      <button data-assistant-topic="tars" aria-pressed="false" title="Tars Agent: pull request reviews" aria-label="About Tars Agent"><i class="icon" data-icon="list-check"></i><span>Tars</span></button>
+    </div>
+    <a class="assistant-contact" href="mailto:bandojukrishnakumar@gmail.com?subject=Career%20Opportunity"><i class="icon" data-icon="envelope"></i> Discuss an opportunity</a>
+  </div>
+</aside>
+<button class="assistant-launcher" id="assistantLauncher" aria-controls="krishnaAssistant" aria-expanded="false" aria-haspopup="dialog"><i class="icon" data-icon="sparkles"></i> Krishna Assistant</button>
 
 <button class="back-to-top" id="backToTop" aria-label="Back to top">
   <i class="icon" data-icon="arrow-up"></i>
@@ -1578,6 +1663,138 @@ function hydrateIcons(root = document) {
 
 document.addEventListener("DOMContentLoaded", () => {
   hydrateIcons();
+
+  const assistantPanel = document.getElementById("krishnaAssistant");
+  const assistantLauncher = document.getElementById("assistantLauncher");
+  const assistantClose = document.getElementById("assistantClose");
+  const assistantAnswer = document.getElementById("assistantAnswer");
+  const assistantForm = document.getElementById("assistantForm");
+  const assistantQuestion = document.getElementById("assistantQuestion");
+  const assistantSummary = assistantAnswer.querySelector("p").textContent;
+  const assistantPrompts = {
+    summary: "Give me a professional summary of Krishna's profile.",
+    roles: "Which roles is Krishna actively looking for?",
+    experience: "Tell me about Krishna's experience and career history.",
+    leadership: "What leadership and mentoring experience does Krishna have?",
+    atlas: "Tell me about Krishna's Atlas Agent.",
+    selfheal: "Tell me about Krishna's Self-Heal Agent.",
+    tars: "Tell me about Krishna's Tars Agent."
+  };
+  let assistantHistory = [];
+  let assistantRequest = null;
+
+  function setAssistantOpen(isOpen) {
+    assistantPanel.hidden = !isOpen;
+    assistantLauncher.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) assistantQuestion.focus();
+    else assistantLauncher.focus();
+  }
+
+  function appendAssistantMessage(speaker, text) {
+    const message = document.createElement("div");
+    message.className = "assistant-message";
+    message.dataset.speaker = speaker;
+    const label = document.createElement("strong");
+    label.textContent = speaker;
+    const content = document.createElement("p");
+    content.textContent = text;
+    message.append(label, content);
+    assistantAnswer.append(message);
+    assistantAnswer.scrollTop = assistantAnswer.scrollHeight;
+    return message;
+  }
+
+  function setAssistantBusy(busy) {
+    assistantPanel.querySelectorAll("[data-assistant-topic], .assistant-send, #assistantQuestion").forEach(control => {
+      control.disabled = busy;
+    });
+  }
+
+  async function replyToQuestion(question) {
+    if (assistantRequest) return;
+    appendAssistantMessage("You", question);
+    assistantQuestion.value = "";
+    if (location.protocol === "file:") {
+      appendAssistantMessage("Krishna Assistant", "AI chat needs the portfolio server. Open the hosted site or the local server URL instead of this HTML file.");
+      return;
+    }
+    const controller = new AbortController();
+    assistantRequest = controller;
+    setAssistantBusy(true);
+    const pending = appendAssistantMessage("Krishna Assistant", "Thinking...");
+    const timeout = setTimeout(() => controller.abort(), 35000);
+    try {
+      const messages = [...assistantHistory.slice(-8), { role: "user", content: question }];
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages }),
+        signal: controller.signal
+      });
+      const result = await response.json();
+      if (assistantRequest !== controller) return;
+      if (!response.ok) throw new Error(result.error || "AI chat is unavailable. Please try again shortly.");
+      if (typeof result.answer !== "string" || !result.answer.trim() || result.answer.length > 4000) {
+        throw new Error("The AI service returned an empty or invalid reply. Please try again.");
+      }
+      pending.querySelector("p").textContent = result.answer;
+      assistantHistory = [...messages, { role: "assistant", content: result.answer }].slice(-8);
+    } catch (error) {
+      if (assistantRequest !== controller) return;
+      pending.querySelector("p").textContent = controller.signal.aborted
+        ? "The reply took too long. Please try again."
+        : error instanceof TypeError || error instanceof SyntaxError
+          ? "Could not reach the AI chat server. Please try again or contact Krishna directly."
+          : error.message;
+    } finally {
+      clearTimeout(timeout);
+      if (assistantRequest === controller) {
+        assistantRequest = null;
+        setAssistantBusy(false);
+        assistantAnswer.scrollTop = assistantAnswer.scrollHeight;
+        if (!assistantPanel.hidden) assistantQuestion.focus({ preventScroll: true });
+      }
+    }
+  }
+
+  assistantQuestion.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.isComposing) {
+      event.preventDefault();
+      assistantForm.requestSubmit();
+    }
+  });
+  assistantForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const question = assistantQuestion.value.trim();
+    if (!question || question.length > 1000 || assistantRequest) return;
+    assistantPanel.querySelectorAll("[data-assistant-topic]").forEach(button => button.setAttribute("aria-pressed", "false"));
+    replyToQuestion(question);
+  });
+  document.getElementById("assistantClear").addEventListener("click", () => {
+    assistantRequest?.abort();
+    assistantRequest = null;
+    assistantHistory = [];
+    setAssistantBusy(false);
+    assistantAnswer.replaceChildren();
+    appendAssistantMessage("Krishna Assistant", assistantSummary);
+    assistantPanel.querySelectorAll("[data-assistant-topic]").forEach(button => button.setAttribute("aria-pressed", "false"));
+    assistantQuestion.value = "";
+    assistantQuestion.focus();
+  });
+
+  assistantLauncher.addEventListener("click", () => setAssistantOpen(assistantPanel.hidden));
+  assistantClose.addEventListener("click", () => setAssistantOpen(false));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !assistantPanel.hidden) setAssistantOpen(false);
+  });
+  assistantPanel.querySelectorAll("[data-assistant-topic]").forEach(button => {
+    button.addEventListener("click", () => {
+      replyToQuestion(assistantPrompts[button.dataset.assistantTopic]);
+      assistantPanel.querySelectorAll("[data-assistant-topic]").forEach(topicButton => {
+        topicButton.setAttribute("aria-pressed", String(topicButton === button));
+      });
+    });
+  });
 
 
   /* ============================================================
