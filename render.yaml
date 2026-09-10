@@ -1,9 +1,17 @@
 services:
-  - type: static
+  - type: web
     name: portfolio
+    runtime: node
     repo: https://github.com/goat82447-ops/Portfolio
     branch: main
-    root: portfolio
-    buildCommand: ""     # empty: no build step
-    publishPath: portfolio
-    env: production
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: openai/gpt-4o-mini
