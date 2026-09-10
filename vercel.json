@@ -1,8 +1,11 @@
 {
   "builds": [
+    { "src": "api/chat.js", "use": "@vercel/node", "config": { "includeFiles": ["portfolio/index.html"], "maxDuration": 60 } },
     { "src": "portfolio/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/", "dest": "/portfolio/index.html" },
     { "src": "/(.*)", "dest": "/portfolio/$1" }
   ]
 }
