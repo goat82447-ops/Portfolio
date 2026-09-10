@@ -1,10 +1,20 @@
 {
   "builds": [
-    { "src": "api/chat.js", "use": "@vercel/node", "config": { "includeFiles": ["portfolio/index.html"], "maxDuration": 60 } },
-    { "src": "portfolio/**", "use": "@vercel/static" }
+    {
+      "src": "portfolio/api/chat.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["portfolio/index.html"],
+        "maxDuration": 60
+      }
+    },
+    { "src": "portfolio/index.html", "use": "@vercel/static" },
+    { "src": "portfolio/style.css", "use": "@vercel/static" },
+    { "src": "portfolio/script.js", "use": "@vercel/static" },
+    { "src": "portfolio/assets/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/api/chat", "dest": "/portfolio/api/chat.js" },
     { "src": "/", "dest": "/portfolio/index.html" },
     { "src": "/(.*)", "dest": "/portfolio/$1" }
   ]
