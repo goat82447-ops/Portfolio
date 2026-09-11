@@ -1141,6 +1141,13 @@ section { position: relative; padding: 120px 0; }
 .assistant-panel[hidden] { display: none; }
 .assistant-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
 .assistant-header h2 { font: 600 18px var(--font-display); }
+.assistant-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.assistant-identity > div { min-width: 0; overflow-wrap: anywhere; }
+.assistant-avatar { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%; color: var(--teal); background: var(--surface-2); border: 1px solid var(--border-strong); font-size: 21px; }
+.assistant-header .assistant-avatar { width: 44px; height: 44px; flex-basis: 44px; font-size: 25px; }
+.assistant-message[data-speaker="Krishna Assistant"] { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 10px; }
+.assistant-message > .assistant-avatar { grid-column: 1; grid-row: 1 / span 2; }
+.assistant-message[data-speaker="Krishna Assistant"] > strong, .assistant-message[data-speaker="Krishna Assistant"] > p { grid-column: 2; }
 .assistant-label { color: var(--text-dim); font-size: 12px; margin-top: 4px; }
 .assistant-close { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; }
 .assistant-body { padding: 18px; }
@@ -1547,9 +1554,12 @@ section { position: relative; padding: 120px 0; }
 
 <aside class="assistant-panel" id="krishnaAssistant" role="dialog" aria-labelledby="assistantTitle" hidden>
   <div class="assistant-header">
-    <div>
-      <h2 id="assistantTitle">Krishna Assistant</h2>
-      <p class="assistant-label">AI assistant</p>
+    <div class="assistant-identity">
+      <span class="assistant-avatar" aria-hidden="true"><i class="icon" data-icon="robot"></i></span>
+      <div>
+        <h2 id="assistantTitle">Krishna Assistant</h2>
+        <p class="assistant-label">AI assistant</p>
+      </div>
     </div>
     <button class="assistant-close" id="assistantClose" aria-label="Close Krishna Assistant" title="Close Krishna Assistant"><i class="icon" data-icon="xmark"></i></button>
   </div>
@@ -1557,6 +1567,7 @@ section { position: relative; padding: 120px 0; }
     <p class="assistant-status">Actively looking &middot; Hyderabad, India</p>
     <div class="assistant-answer" id="assistantAnswer" role="log" aria-label="Conversation with Krishna Assistant" aria-live="polite" aria-relevant="additions text" tabindex="0">
       <div class="assistant-message" data-speaker="Krishna Assistant">
+        <span class="assistant-avatar" aria-hidden="true"><i class="icon" data-icon="robot"></i></span>
         <strong>Krishna Assistant</strong>
         <p>Hello! Thank you for reaching out. I'm Krishna's  assistant. How can I help you learn more about his experience, skills, or projects?</p>
       </div>
@@ -1694,6 +1705,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const message = document.createElement("div");
     message.className = "assistant-message";
     message.dataset.speaker = speaker;
+    if (speaker === "Krishna Assistant") {
+      const avatar = document.createElement("span");
+      avatar.className = "assistant-avatar";
+      avatar.setAttribute("aria-hidden", "true");
+      avatar.innerHTML = iconSvg("robot");
+      message.append(avatar);
+    }
     const label = document.createElement("strong");
     label.textContent = speaker;
     const content = document.createElement("p");
