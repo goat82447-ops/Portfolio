@@ -41,6 +41,27 @@ function validMessages(messages) {
       && message.content.length <= (message.role === "user" ? 1000 : 4000));
 }
 
+const PROVIDER_ENDPOINTS = Object.freeze({
+  nvidia: "https://integrate.api.nvidia.com/v1/chat/completions",
+  groq: "https://api.groq.com/openai/v1/chat/completions",
+  openrouter: "https://openrouter.ai/api/v1/chat/completions",
+  gemini: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+});
+
+function getChatProviders(env) {
+  const provider = (env.AI_PROVIDER || "openrouter").trim().toLowerCase();
+  const order = provider === "auto"
+    ? (env.AI_PROVIDER_ORDER || "nvidia,groq,openrouter,gemini").split(",").map(name => name.trim().toLowerCase())
+    : [provider];
+  if (order.some(name => !Object.hasOwn(PROVIDER_ENDPOINTS, name))) return [];
+  return [...new Set(order)].map(name => ({
+    name,
+    endpoint: PROVIDER_ENDPOINTS[name],
+    apiKey: env[`${name.toUpperCase()}_API_KEY`]?.trim(),
+    model: env[`${name.toUpperCase()}_MODEL`]?.trim()
+  })).filter(provider => provider.apiKey && provider.model);
+}
+
 function createChatHandler({ fetchImpl = fetch, env = process.env, now = Date.now, loadKnowledge = getPortfolioKnowledge } = {}) {
   const requests = new Map();
   return async function handler(request, response) {
@@ -77,42 +98,53 @@ function createChatHandler({ fetchImpl = fetch, env = process.env, now = Date.no
     if (!body || !validMessages(body.messages)) {
       return respond(response, 400, { error: "Send a question of up to 1,000 characters with valid conversation history." });
     }
-    if (!env.OPENROUTER_API_KEY || !env.OPENROUTER_MODEL) {
+    const providers = getChatProviders(env);
+    if (!providers.length) {
       return respond(response, 503, { error: "AI chat is not configured yet. Please contact Krishna directly for now." });
     }
     try {
-      const upstream = await fetchImpl("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "X-OpenRouter-Title": "Krishna Portfolio Assistant"
-        },
-        signal: AbortSignal.timeout(25000),
-        body: JSON.stringify({
-          model: env.OPENROUTER_MODEL,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "system", content: `PORTFOLIO_DATA:\n${loadKnowledge()}` },
-            ...body.messages.map(message => ({ role: message.role, content: message.content.trim() }))
-          ],
-          max_tokens: 650,
-          temperature: 0.2,
-          stream: false,
-          provider: { data_collection: "deny" }
-        })
-      });
-      if (!upstream.ok) {
-        return respond(response, upstream.status === 429 ? 429 : 502, {
-          error: upstream.status === 429 ? "The AI service is busy. Please try again shortly." : "AI chat is temporarily unavailable. Please try again later or contact Krishna directly."
+      const messages = [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: `PORTFOLIO_DATA:\n${loadKnowledge()}` },
+        ...body.messages.map(message => ({ role: message.role, content: message.content.trim() }))
+      ];
+      const signal = AbortSignal.timeout(25000);
+      for (const [index, provider] of providers.entries()) {
+        signal.throwIfAborted();
+        const isOpenRouter = provider.name === "openrouter";
+        const upstream = await fetchImpl(provider.endpoint, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${provider.apiKey}`,
+            "Content-Type": "application/json",
+            ...(isOpenRouter ? { "X-OpenRouter-Title": "Krishna Portfolio Assistant" } : {})
+          },
+          signal,
+          body: JSON.stringify({
+            model: provider.model,
+            messages,
+            max_tokens: 650,
+            temperature: 0.2,
+            stream: false,
+            ...(isOpenRouter ? { provider: { data_collection: "deny" } } : {})
+          })
         });
+        if (!upstream.ok) {
+          console.error("AI provider request failed", { provider: provider.name, status: upstream.status });
+          await upstream.body?.cancel();
+          if ([402, 429].includes(upstream.status) && index < providers.length - 1) continue;
+          if (upstream.status === 429) response.setHeader("Retry-After", "60");
+          return respond(response, upstream.status === 429 ? 429 : 502, {
+            error: upstream.status === 429 ? "The AI service is busy. Please try again shortly." : "AI chat is temporarily unavailable. Please try again later or contact Krishna directly."
+          });
+        }
+        const result = await upstream.json();
+        const answer = result.choices?.[0]?.message?.content;
+        if (result.error || typeof answer !== "string" || !answer.trim() || answer.length > 4000) {
+          return respond(response, 502, { error: "The AI service could not provide a reply. Please try again." });
+        }
+        return respond(response, 200, { answer: answer.trim() });
       }
-      const result = await upstream.json();
-      const answer = result.choices?.[0]?.message?.content;
-      if (result.error || typeof answer !== "string" || !answer.trim() || answer.length > 4000) {
-        return respond(response, 502, { error: "The AI service could not provide a reply. Please try again." });
-      }
-      return respond(response, 200, { answer: answer.trim() });
     } catch (error) {
       return respond(response, error.name === "TimeoutError" ? 504 : 502, {
         error: "AI chat could not complete the request. Please try again or contact Krishna directly."
@@ -123,3 +155,4 @@ function createChatHandler({ fetchImpl = fetch, env = process.env, now = Date.no
 
 module.exports = createChatHandler();
 module.exports.createChatHandler = createChatHandler;
+module.exports.getChatProviders = getChatProviders;
